@@ -1,5 +1,5 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">Geo Fencing</string>
+    <string name="app_name">GeoFencing</string>
     <string name="title_activity_maps">Geo Fencing</string>
 
     <!--    Geofence Status Strings-->
