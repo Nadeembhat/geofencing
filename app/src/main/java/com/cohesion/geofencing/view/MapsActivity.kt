@@ -2,78 +2,66 @@ package com.cohesion.geofencing.view
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.cohesion.geofencing.geoFenceEngine.FenceManager
+import com.cohesion.geofencing.Logger
 import com.cohesion.geofencing.R
-import com.cohesion.geofencing.util.GeoFencing
-import com.cohesion.geofencing.util.GeofencingConstants.createChannel
-import com.cohesion.geofencing.util.errorMessage
-import com.google.android.gms.location.Geofence
-import com.google.android.gms.location.GeofencingClient
-import com.google.android.gms.location.GeofencingRequest
-import com.google.android.gms.location.LocationServices
+import com.cohesion.geofencing.geoFenceEngine.GeoFence.GeofencingConstants.FENCE_DATA
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-private const val UPDATE_INTERVAL = 3 * 60 * 1000 // 3 minutes
-private const val FASTEST_INTERVAL = 30 * 1000 // 30 secs
+
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback , OnMapLongClickListener{
 
     private lateinit var mMap: GoogleMap
-    private lateinit var geofencingClient: GeofencingClient
-    private var geofenceHelper: GeoFencing? = null
-    private val TAG = "MapsActivity"
-    private val GEOFENCE_RADIUS = 100f // Meters Radius
-    private val GEOFENCE_ID = "SOME_GEOFENCE_ID"
     private val FINE_LOCATION_ACCESS_REQUEST_CODE = 10001
     private val BACKGROUND_LOCATION_ACCESS_REQUEST_CODE = 10002
-
-
+    private var locationManager: FenceManager?=null
+    private  var mRecyclerView:RecyclerView ?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
-
+        mRecyclerView = findViewById(R.id.map_log_rv)
+        mRecyclerView!!.layoutManager = LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false)
+        loggerList.clear()
+        mAdapter =  LoggerAdapter(loggerList)
+        mRecyclerView!!.adapter = mAdapter
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
-        geofencingClient = LocationServices.getGeofencingClient(this)
-        geofenceHelper = GeoFencing(this)
-        createChannel(this)
+        locationManager =  FenceManager(this)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        val mobinius = LatLng(12.99438, 77.62528)
-        mMap.addMarker(MarkerOptions().position(mobinius).title("Mobinius Technologies"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mobinius, 20f))
+        FENCE_DATA.forEach {
+            mMap.addMarker(MarkerOptions().position(it.latLong).title(it.name))
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it.latLong, 15f))
+        }
         enableUserLocation()
         mMap.setOnMapLongClickListener(this)
     }
     private fun enableUserLocation() {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.isMyLocationEnabled = true
+            addGeoFenceNodes()
         } else {
             if (ActivityCompat.shouldShowRequestPermissionRationale(
                     this,
                     Manifest.permission.ACCESS_FINE_LOCATION
-                )
-            ) {
+                )) {
                 ActivityCompat.requestPermissions(
                     this,
                     arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
@@ -104,16 +92,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback , OnMapLongClickLis
                         Manifest.permission.ACCESS_COARSE_LOCATION
                     ) != PackageManager.PERMISSION_GRANTED
                 ) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
                     return
                 }
                 mMap.isMyLocationEnabled = true
+                addGeoFenceNodes()
             } else {
                 //We do not have the permission..
                 Toast.makeText(
@@ -127,6 +109,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback , OnMapLongClickLis
             if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 //We have the permission
                 Toast.makeText(this, "You can add geofences...", Toast.LENGTH_SHORT).show()
+                addGeoFenceNodes()
             } else {
                 //We do not have the permission..
                 Toast.makeText(
@@ -139,13 +122,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback , OnMapLongClickLis
     }
     override fun onMapLongClick(latLng: LatLng) {
         if (Build.VERSION.SDK_INT >= 29) {
-            //We need background permission
             if (ContextCompat.checkSelfPermission(
                     this,
                     Manifest.permission.ACCESS_BACKGROUND_LOCATION
                 ) == PackageManager.PERMISSION_GRANTED
             ) {
-                handleMapLongClick(latLng)
+                locationManager!!.addGeofence(latLng.latitude ,latLng.longitude,100f,"Node Random")
             } else {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(
                         this,
@@ -166,54 +148,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback , OnMapLongClickLis
                 }
             }
         } else {
-            handleMapLongClick(latLng)
+            locationManager!!.addGeofence(latLng.latitude ,latLng.longitude,100f,"Node Random")
         }
     }
 
-    private fun handleMapLongClick(latLng: LatLng) {
-        mMap.clear()
-        addMarker(latLng)
-        addCircle(latLng, GEOFENCE_RADIUS)
-        addGeofence(latLng, GEOFENCE_RADIUS)
-    }
 
-    private fun addGeofence(latLng: LatLng, radius: Float) {
-        val geofence = geofenceHelper!!.getGeofence(
-            GEOFENCE_ID,
-            latLng,
-            radius,
-            Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT
-        )
-        val geofencingRequest: GeofencingRequest = geofenceHelper!!.getGeofencingRequest(geofence!!)
-        val pendingIntent = geofenceHelper!!.getPendingIntent()
-        geofencingClient.addGeofences(geofencingRequest, pendingIntent)
-            .addOnSuccessListener {
-                Toast.makeText(this, "Geofence Added..", Toast.LENGTH_LONG).show()
-                Log.e(TAG, "onSuccess: Geofence Added...")
-            }
-            .addOnFailureListener { e ->
-                val errorMessage = errorMessage(this, e.hashCode())
-                Log.e(TAG, "onFailure: $errorMessage")
-            }
-    }
 
-    private fun addMarker(latLng: LatLng) {
-        val markerOptions = MarkerOptions().position(latLng)
-        mMap.addMarker(markerOptions)
-    }
 
-    private fun addCircle(latLng: LatLng, radius: Float) {
-        val circleOptions = CircleOptions()
-        circleOptions.center(latLng)
-        circleOptions.radius(radius.toDouble())
-        circleOptions.strokeColor(Color.argb(255, 255, 0, 0))
-        circleOptions.fillColor(Color.argb(64, 255, 0, 0))
-        circleOptions.strokeWidth(4f)
-        mMap.addCircle(circleOptions)
+    private fun addGeoFenceNodes(){
+        FENCE_DATA.forEach {
+            locationManager!!.addGeofence(it.latLong.latitude ,it.latLong.longitude,it.radius,it.id)
+        }
     }
-
     companion object {
-        internal const val ACTION_GEOFENCE_EVENT =
-            "MapsActivity.geofencing.action.ACTION_GEOFENCE_EVENT"
+        var mAdapter: LoggerAdapter?=null
+       var loggerList:ArrayList<Logger> = arrayListOf()
     }
 }
