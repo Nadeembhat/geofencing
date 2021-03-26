@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "868462055928",
+    "project_id": "geo-fencing-c843d",
+    "storage_bucket": "geo-fencing-c843d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:868462055928:android:6851996cac53910a49c60d",
+        "android_client_info": {
+          "package_name": "com.cohesion.geofencing"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "868462055928-9b9su3avopsln12qcb5h6tm7bdkn07kb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUqY5uI2UmnV8dFfzHMVd3RL1OyV8YnBY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "868462055928-9b9su3avopsln12qcb5h6tm7bdkn07kb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
