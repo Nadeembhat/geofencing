@@ -14,7 +14,7 @@ The GeoFence App is includes
 2.Engine
 3.Util
 
-## View
+# View
 The View Is Just a Ui with having two parts 
     • The Map
     • The Logger
@@ -25,7 +25,7 @@ The Logger is a showing all the entries,exit and messages [Info or Error] with t
 eg.
 1. Info Entered 26 March 2020 12:21:12
 
-## Engine
+# Engine
 The Engine is the Logical Part to Manage and Add GeoFence , its having Three Parts
 - [FenceManager] 
 - [GeoFence] 
@@ -39,14 +39,14 @@ The Engine is the Logical Part to Manage and Add GeoFence , its having Three Par
 - GeoFenceBroadcastReceiver:
 > The job of GBR is to receive the pending intents for every GeoFence location and show it according to the transaction type or error on the UI.
 
-## Util:
-The Util contains two Things  
-    - Logger 
-    - Util
-# Logger:
-This is just a model class and with an enum class 
 # Util:
-The Util class is having only one method namely errorMessage just to check the error type .
+The Util contains two Things  
+  - Logger 
+  - Util
+## Logger:
+- This is just a model class and with an enum class 
+## Util:
+- The Util class is having only one method namely errorMessage just to check the error type .
 
 
-The Application is also having crashlytics integrated.
+ ## The Application is also having crashlytics integrated.
