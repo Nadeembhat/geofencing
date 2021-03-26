@@ -1,11 +1,11 @@
 # geofence
 
 ## Instructions / Testing
-    - Clone The Repo.
-    - Build in Android Studio; run on emulator.
-    - Use the included GoToGameTest.gpx file with the Simulate Location.
-    - Go to the Emulator , click on the options menu of the emulator on Bottom Right side . Now in the New Screen click on the Routes Tab (Upper Side on the Map) and after then click on the import gpx button bottom of the map.
-    - After Launching the App The GeoFence Test Data Will be Added and then Click on the Play Button on The Extended Control Screen.
+ - Clone The Repo.
+ - Build in Android Studio; run on emulator.
+ - Use the included GoToGameTest.gpx file with the Simulate Location.
+ - Go to the Emulator , click on the options menu of the emulator on Bottom Right side . Now in the New Screen click on the Routes Tab (Upper Side on the Map) and after then click on the import gpx button bottom of the map.
+ - After Launching the App The GeoFence Test Data Will be Added and then Click on the Play Button on The Extended Control Screen.
 
 
 ## Technical Design Note
