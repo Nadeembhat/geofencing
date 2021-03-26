@@ -42,7 +42,7 @@ class GeoFence(base: Context?) : ContextWrapper(base) {
         if (pendingIntent != null) {
             return pendingIntent!!
         }
-        val intent = Intent(this, GeoFencingBReceiver::class.java)
+        val intent = Intent(this, GeoFenceBroadcastReceiver::class.java)
         pendingIntent =
             PendingIntent.getBroadcast(this, 2607, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         return pendingIntent!!

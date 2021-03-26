@@ -5,11 +5,18 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import com.cohesion.geofencing.LogLevel
+import com.cohesion.geofencing.Logger
 import com.cohesion.geofencing.util.errorMessage
+import com.cohesion.geofencing.view.MapsActivity
+import com.cohesion.geofencing.view.MapsActivity.Companion.loggerList
+import com.cohesion.geofencing.view.MapsActivity.Companion.mAdapter
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 /**
@@ -33,6 +40,11 @@ class FenceManager(private val context: Context) {
             geoFence = GeoFence(context)
         }
      fun addGeofence(lat: Double, long: Double, radius: Float, name: String) {
+         val timeformat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.US)
+         val cal = Calendar.getInstance()
+         val log = Logger(LogLevel.Info, "\tGeo Fence Added\t" + timeformat.format(cal.time))
+         loggerList.add(log)
+         mAdapter!!.notifyDataSetChanged()
         val geofence = geoFence!!.getGeofence(
             i.toString(),
             lat,
