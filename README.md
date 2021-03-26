@@ -27,24 +27,25 @@ eg.
 
 ## Engine
 The Engine is the Logical Part to Manage and Add GeoFence , its having Three Parts
-    1. FenceManager
-    2. GeoFence
-    3. GeoFenceBroadCastReceiver
-FenceManager:
+- [FenceManager] 
+- [GeoFence] 
+- [GeoFenceBroadCastReceiver] 
+  
+- FenceManager:
 > The Job of Fence Manager is to Initialize the GeoFenceClient and using a Fence Obj as Entity to build the GeoFence.
-GeoFence:
+- GeoFence:
 > GeoFence is a Single Entity which contains information about geofence
 > like (ID: String, lat: Double,long:Double, radius: Float, name:String,transitionTypes: Int) . 
-GeoFenceBroadcastReceiver:
+- GeoFenceBroadcastReceiver:
 > The job of GBR is to receive the pending intents for every GeoFence location and show it according to the transaction type or error on the UI.
 
 ## Util:
 The Util contains two Things  
-    • Logger 
-    • Util
-Logger:
+    - Logger 
+    - Util
+# Logger:
 This is just a model class and with an enum class 
-Util:
+# Util:
 The Util class is having only one method namely errorMessage just to check the error type .
 
 
