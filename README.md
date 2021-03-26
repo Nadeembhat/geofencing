@@ -31,12 +31,12 @@ The Engine is the Logical Part to Manage and Add GeoFence , its having Three Par
     2. GeoFence
     3. GeoFenceBroadCastReceiver
 FenceManager:
- The Job of Fence Manager is to Initialize the GeoFenceClient and using a Fence Obj as Entity to build the GeoFence.
+> The Job of Fence Manager is to Initialize the GeoFenceClient and using a Fence Obj as Entity to build the GeoFence.
 GeoFence:
- GeoFence is a Single Entity which contains information about geofence
-like (ID: String, lat: Double,long:Double, radius: Float, name:String,transitionTypes: Int) . 
+> GeoFence is a Single Entity which contains information about geofence
+> like (ID: String, lat: Double,long:Double, radius: Float, name:String,transitionTypes: Int) . 
 GeoFenceBroadcastReceiver:
-The job of GBR is to receive the pending intents for every GeoFence location and show it according to the transaction type or error on the UI.
+> The job of GBR is to receive the pending intents for every GeoFence location and show it according to the transaction type or error on the UI.
 
 ## Util:
 The Util contains two Things  
