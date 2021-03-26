@@ -2,9 +2,6 @@
     <string name="app_name">Geo Fencing</string>
     <string name="title_activity_maps">Geo Fencing</string>
 
-
-
-
     <!--    Geofence Status Strings-->
     <string name="geofences_added">Clue Geofence added.</string>
     <string name="geofences_removed">Geofences removed.</string>
