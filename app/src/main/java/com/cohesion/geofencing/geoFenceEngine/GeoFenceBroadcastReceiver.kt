@@ -13,6 +13,7 @@ import com.cohesion.geofencing.view.MapsActivity
 import com.cohesion.geofencing.view.MapsActivity.Companion.loggerList
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -28,26 +29,21 @@ private const val TAG = "GeoFencingBReceiver"
 class GeoFencingBReceiver :BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
             val geofencingEvent = GeofencingEvent.fromIntent(intent)
-
+        val timeformat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.US)
             if (geofencingEvent.hasError()) {
                 val errorMessage = errorMessage(context, geofencingEvent.errorCode)
                 Log.e(TAG, errorMessage)
-                val log = Logger(LogLevel.Error,errorMessage)
+                val cal = Calendar.getInstance()
+                val log = Logger(LogLevel.Error, "Error\t" + timeformat.format(cal.time))
                 loggerList.add(log)
                 MapsActivity.mAdapter!!.notifyDataSetChanged()
                 return
             }
-            val geofenceList = geofencingEvent.triggeringGeofences
-            for (geofence in geofenceList) {
-                Log.e(TAG, "onReceive:----\t " + geofence.requestId)
-            }
             val transitionType = geofencingEvent.geofenceTransition
-            Log.e(TAG, "TransactionType: " + transitionType+"\tGeoFence Size\t"+geofenceList.size)
             when (transitionType) {
                 Geofence.GEOFENCE_TRANSITION_ENTER -> {
-                    Log.e(TAG, context.getString(R.string.geofence_entered))
-                    //Entered (Geo Fence Name) at (Time)//dd:MM:yyyy aa:ss
-                    val log = Logger(LogLevel.Info,"Entered\t"+Calendar.getInstance().time)
+                    val cal = Calendar.getInstance()
+                    val log = Logger(LogLevel.Info, "Entered\t" + timeformat.format(cal.time))
                     loggerList.add(log)
                     MapsActivity.mAdapter!!.notifyDataSetChanged()
                     val fenceId = when {
@@ -60,26 +56,25 @@ class GeoFencingBReceiver :BroadcastReceiver() {
                     }
 
                     fenceId.forEach {
-                        Log.e(TAG, "Added Geofence is:"+fenceId!!)
+                        Log.e(TAG, "Added Geofence is:")
                     }
-                    // Check geofence against the constants listed in GeofenceUtil.kt to see if the
+                    // Check geofence against the constants listed in GeoFence.kt to see if the
                     // user has entered any of the locations we track for geofences.
                     val foundIndex = FENCE_DATA.indexOfFirst {
                         it.id == fenceId
                     }
                     // Unknown Geofences aren't helpful to us
-                    if ( -1 == foundIndex) {
+                    if (-1 == foundIndex) {
                         Log.e(TAG, "Unknown Geofence: Abort Mission")
                         return
                     }
-                    Log.e(TAG, "TRANSACTION ENTER\t"+foundIndex)
                 }
                 Geofence.GEOFENCE_TRANSITION_EXIT -> {
                     Log.e(TAG, context.getString(R.string.geofence_entered))
-                    val log = Logger(LogLevel.Info,"GEOFENCE_TRANSITION_EXit\t")
+                    val cal = Calendar.getInstance()
+                    val log = Logger(LogLevel.Info, "Exit\t" + timeformat.format(cal.time))
                     loggerList.add(log)
                     MapsActivity.mAdapter!!.notifyDataSetChanged()
-                    Log.e(TAG, "GEOFENCE_TRANSITION_EXIT")
                 }
             }
         }

@@ -4,12 +4,12 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.cohesion.geofencing.LogLevel
 import com.cohesion.geofencing.geoFenceEngine.FenceManager
 import com.cohesion.geofencing.Logger
 import com.cohesion.geofencing.R
@@ -21,6 +21,9 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback , OnMapLongClickListener{
 
@@ -29,6 +32,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback , OnMapLongClickLis
     private val BACKGROUND_LOCATION_ACCESS_REQUEST_CODE = 10002
     private var locationManager: FenceManager?=null
     private  var mRecyclerView:RecyclerView ?=null
+    val timeformat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.US)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,25 +102,26 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback , OnMapLongClickLis
                 addGeoFenceNodes()
             } else {
                 //We do not have the permission..
-                Toast.makeText(
-                    this,
-                    "location access is neccessary for geofences to trigger...",
-                    Toast.LENGTH_SHORT
-                ).show()
+                val cal = Calendar.getInstance()
+                val log = Logger(LogLevel.Error, "\tLocation Access Is Necessary\t" + timeformat.format(cal.time))
+                loggerList.add(log)
+                mAdapter!!.notifyDataSetChanged()
             }
         }
         if (requestCode == BACKGROUND_LOCATION_ACCESS_REQUEST_CODE) {
             if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 //We have the permission
-                Toast.makeText(this, "You can add geofences...", Toast.LENGTH_SHORT).show()
+                val cal = Calendar.getInstance()
+                val log = Logger(LogLevel.Info, "\tYou can add geofences...\t" + timeformat.format(cal.time))
+                loggerList.add(log)
+                mAdapter!!.notifyDataSetChanged()
                 addGeoFenceNodes()
             } else {
                 //We do not have the permission..
-                Toast.makeText(
-                    this,
-                    "Background location access is neccessary for geofences to trigger...",
-                    Toast.LENGTH_SHORT
-                ).show()
+                val cal = Calendar.getInstance()
+                val log = Logger(LogLevel.Error, "\tBack Location Is Necessary\t" + timeformat.format(cal.time))
+                loggerList.add(log)
+                mAdapter!!.notifyDataSetChanged()
             }
         }
     }

@@ -51,32 +51,52 @@ class GeoFence(base: Context?) : ContextWrapper(base) {
     data class FenceDataObject(val id: String, val name: String, val latLong: LatLng,val radius:Float)
 
     internal object GeofencingConstants {
+
+        /*<wpt lat="12.91987" lon="77.57675"> 12.91987, 77.57675
+        <name>Mobinius</name>
+        <time>2014-09-24T14:00:00Z</time>
+    </wpt>
+
+    <wpt lat="12.90778" lon="77.58316">
+      <name>J.P Nagar</name>
+      <time>2014-09-24T14:00:10Z</time>
+    </wpt>
+
+    <wpt lat="12.94828" lon="77.60338">
+        <name>Abhaya Hospital</name>
+        <time>2014-09-24T14:00:20Z</time>
+    </wpt>
+
+    <wpt lat="12.92694" lon="77.54537">
+        <name>Banashankari</name>
+        <time>2014-09-24T14:00:30Z</time>
+    </wpt>*/
         val FENCE_DATA = arrayOf(
             FenceDataObject(
                 "NODE 0",
                 "Mobinius",
-                LatLng(39.2297964261881, -84.25413151084008),
+                LatLng(12.91987, 77.57675),
                 300f
             ),
 
             FenceDataObject(
                 "NODE 1",
-                "Mobinius",
-                LatLng(39.21293531668262, -84.2547283023091),
+                "J P Nagar",
+                LatLng(12.90778, 77.58316),
                 300f
             ),
 
             FenceDataObject(
                 "NODE 2",
-                "Mobinius",
-                LatLng(39.09729839408703, -84.50707454904466),
+                "Abhaya Hospital",
+                LatLng(12.94828,77.60338),
                 200f
             ),
 
             FenceDataObject(
                 "NODE 3",
-                "Mobinius",
-                LatLng(39.24654881141455, -84.37935852562588),
+                "Banashankari",
+                LatLng(12.92694, 77.54537),
                 400f
             )
         )
