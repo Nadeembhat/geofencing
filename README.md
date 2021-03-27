@@ -18,10 +18,11 @@ The GeoFence App is includes
 The View Is Just a Ui with having two parts 
  - The Map
  - The Logger
-Map Is Pointing all the GeoFences with red Marker .
+
+### Map Is Pointing all the GeoFences with red Marker .
 You can Longpress on the Map To Add that Respective Location as Geofence
 
-The Logger is a showing all the entries,exit and messages [Info or Error] with time and index.
+### The Logger is a showing all the entries,exit and messages [Info or Error] with time and index.
 eg.
 1. Info Entered 26 March 2020 12:21:12
 
