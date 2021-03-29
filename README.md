@@ -9,7 +9,7 @@
 
 
 ## Technical Design Note
-The GeoFence App is includes 
+The GeoFence App  includes modules :
 1.View
 2.Engine
 3.Util
